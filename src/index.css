@@ -24,7 +24,7 @@ li{
 li:hover{
     background-color: rgba(227,239,253,.6);
 }
-form{
+/* form{
     position: relative;
     top: 50%;
     left: 50%;
@@ -82,6 +82,6 @@ form:hover .fa{
     background: #07051a;
     color: black;
 }
-
+ */
 
 

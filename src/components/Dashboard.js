@@ -38,6 +38,7 @@ export default function Dashboard() {
 
     const [error, setError] = useState("");
     const {currentUser, logout} = useAuth();
+    console.log("Here I am",JSON.stringify(currentUser))
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const history = useHistory();
     async function handleLogOut() {
@@ -66,11 +67,11 @@ export default function Dashboard() {
             right: 'auto',
             top: '25%', // start from center
             transform: 'translate(-50%,-' + '15px' + ')', // adjust top "up" based on height
-            width: '656px',
-            backgroundColor: "rgba(0,0,0,0.85)",
-            color: "white",
+            width: '850px',
+            backgroundColor: "rgba(137,207,240,0.95)",
+            color: "black",
             fontFamily:"Avenir",
-            border :"2px solid grey",
+            border :"2px solid black",
         },
       };
     const useStyles = makeStyles((theme) => ({
@@ -170,26 +171,41 @@ export default function Dashboard() {
          
         },
       });
-      const [expanded, setExpanded] = React.useState(false);
-      const handleExpandClick = () => {
-        setExpanded(!expanded);
-      };
-      const [isApproved_MKBHD, setIsApproved_MKBHD] = useState(false);
-      let mkbhd_user_id = "mqdz9k1pRICP0dwOe7iu";
-      useEffect(async () => {
-        const person = { username: "test_user", creator_name: "MKBHD" , event_id: 0};
+    const [expanded, setExpanded] = React.useState(false);
+    const handleExpandClick = () => {
+    setExpanded(!expanded);
+    };
+    const [isApproved_MKBHD, setIsApproved_MKBHD] = useState(false);
+    const [isApplied_MKBHD, setIsApplied_MKBHD] = useState(false);
+    let mkbhd_user_id = "mqdz9k1pRICP0dwOe7iu";
+    useEffect(async () => {
+        const person = { username: currentUser.displayName, creator_name: "MKBHD" , event_id: 0};
         await axios
-          .post("http://localhost:9000/checkapplied", person)
-          .then((res) => {
+            .post("http://localhost:9000/checkapplied", person)
+            .then((res) => {
             // console.log(res);
             // console.log(res.data);
             setIsApproved_MKBHD(res.data)
             console.log(res.data)
-          })
-          .catch((err) => {
+            })
+            .catch((err) => {
             console.log(err);
-          });
-      }, [])
+            });
+    }, [])
+    async function handleRegisterMKBHD() {
+        const person = { username: currentUser.displayName, creator_name: "MKBHD" , event_id: 0, user_id: currentUser.uid};
+        await axios
+            .post("http://localhost:9000/registrationFlow", person)
+            .then((res) => {
+            // console.log(res);
+            // console.log(res.data);
+            console.log(res.data)
+            setIsApplied_MKBHD(true)
+            })
+            .catch((err) => {
+            console.log(err);
+            });
+    }
     return (
         <div>
             <div className="navbar">
@@ -213,12 +229,12 @@ export default function Dashboard() {
                     </div> */}
             </div>
             <div style={{display: "flex", position:"fixed", zIndex:2, width:"100%", backgroundColor:"black", marginTop:"-19px", height:"95px", marginLeft:"-50px", borderColor:"grey"}}>
-                <div style={{float:"left", marginTop:"3px", marginLeft:"30px"}}>
-                    <img src={Logo} width="180" height="95" />
+                <div style={{float:"left", marginTop:"3px", marginLeft:"622.5px"}}>
+                    <img src={Logo} width="180" height="100" />
                 </div>
                 <div style={{float:"left",marginTop:"5px"}}>
                     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"></link>
-                    <form action="" style={{marginLeft:"540px"}}>
+                    <form action="" style={{marginLeft:"-662px"}}>
                         <input type="search"></input>
                         <i class="fa fa-search"></i>
                     </form>
@@ -349,10 +365,13 @@ export default function Dashboard() {
                                         <p>₹₹ Price: ₹5000(Max)</p>
                                         <p> <ComputerIcon fontSize="small" style={{marginTop:"-5px"}}></ComputerIcon>  Genre: Tech</p>
                                         <p><AccessTimeIcon fontSize="small" style={{marginTop:"-5px"}}></AccessTimeIcon> Session On: Coming Soon...</p>
-                                        <hr style={{color:"grey"}}></hr>
-                                        <p>Disclaimer: Hipptor sessions consist of a maximum of 10 registered candidates, creator(s) and moderator(s) from hipptor’s team. Hipptor’s moderator(s) will be silent member(s) in the overall session and will be available just for the purpose of monitoring the quality of content. Hipptor does not take any responsibility for the views shared in the session(s) by either the creator(s) or the candidates attending the session. Persons involved in the session(s) will be allowed only after they agree to the terms  </p>
+                                        <hr style={{color:"black"}}></hr>
+                                        <p style={{fontWeight:600}}>Disclaimer: Hipptor sessions consist of exactly 10 registered candidates along with the creator(s). Hipptor’s moderator(s) will be available throughout the session for the purpose of monitoring the decency of the content. Hipptor does not take any responsibility for the views shared in the session(s) by either the creator(s) or the candidates attending the session. Clicking on the register button will not guarantee a meeting with the creator and 10 candidates will be selected from the entire pool of registered candidate(s). Persons involved in the session(s) will be allowed only after they agree to the terms and conditions of Hipptor.</p>
                                         <div>
-                                        <button onClick={() => setModalIsOpen(!modalIsOpen)}>Close</button>
+                                        <center>
+                                        {/* <button onClick={() => setModalIsOpen(!modalIsOpen)}>Close</button> */}
+                                        <Button variant="contained" onClick={handleRegisterMKBHD}>{!isApplied_MKBHD ? "Agree and Register":"Congratulations!!!, You've Registered"}</Button>
+                                        </center>
                                         </div>
                                     </Modal> </>
                                     :<Button className={classes.but3} variant="contained"  style={{color:"white", backgroundColor:"grey" ,alignItems:"center"}} disabled>You've Already Applied</Button>}
